@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HAPPY WOMAN'S DAY 20/10</title>
+  <style>
+    :root{
+      --bg:#fffdf8;
+      --fg:#221a23;
+      --accent:#ffb703;
+      --accent2:#f77f00;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
+      color:var(--fg); background: var(--bg);
+      display:flex; align-items:center; justify-content:center; overflow:hidden;
+    }
+
+    /* Background soft shapes */
+    .bg{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+    .bg:before, .bg:after{
+      content:""; position:absolute; inset:-10%;
+      background-repeat:no-repeat; background-size:contain; opacity:.12; filter:blur(0.3px);
+    }
+    .bg:before{
+      background-image:
+        radial-gradient(600px 420px at 20% 10%, #ffe9a8 0, transparent 65%),
+        radial-gradient(520px 360px at 85% 15%, #ffd8a8 0, transparent 65%),
+        radial-gradient(520px 360px at 12% 85%, #d6ffd8 0, transparent 60%),
+        radial-gradient(520px 360px at 88% 80%, #e8fff1 0, transparent 55%);
+    }
+
+    /* Faint big flower (bottom-right), rotates with white-light shimmer */
+    .bg-flower{
+      position:fixed; right:-120px; bottom:-80px;
+      width:min(60vw, 720px); height:min(60vw, 720px);
+      z-index:0; opacity:.25; pointer-events:none; filter:blur(6px);
+      animation: rotate 60s linear infinite, glow 5s ease-in-out infinite;
+      transform-origin:center;
+    }
+    .bg-flower::before{
+      content:""; position:absolute; inset:0;
+      background-repeat:no-repeat; background-size:contain; background-position:center;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f7c76b"/><stop offset="100%" stop-color="#f4a43a"/></radialGradient></defs><circle cx="256" cy="256" r="70" fill="#7a5d2e" opacity="0.6"/><g fill="url(#g)" opacity="0.85"><ellipse cx="256" cy="112" rx="28" ry="90"/><ellipse cx="256" cy="400" rx="28" ry="90"/><ellipse cx="112" cy="256" rx="90" ry="28"/><ellipse cx="400" cy="256" rx="90" ry="28"/><ellipse cx="156" cy="156" rx="26" ry="78" transform="rotate(-45 156 156)"/><ellipse cx="356" cy="356" rx="26" ry="78" transform="rotate(-45 356 356)"/><ellipse cx="356" cy="156" rx="26" ry="78" transform="rotate(45 356 156)"/><ellipse cx="156" cy="356" rx="26" ry="78" transform="rotate(45 156 356)"/></g></svg>');
+    }
+    @keyframes rotate { from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
+    @keyframes glow { 0%,100%{ filter: blur(6px) brightness(1);} 50%{ filter: blur(6px) brightness(1.25);} }
+
+    .card{
+      width:min(740px, 92vw);
+      background:#fff; border-radius:20px; padding:24px 20px; box-shadow:0 16px 48px rgba(0,0,0,.08);
+      position:relative; z-index:2;
+      backdrop-filter: saturate(120%) contrast(102%);
+      display:flex; flex-direction:column;
+    }
+    h1{
+      margin:0 0 12px; font-size: clamp(26px, 5vw, 40px);
+      line-height:1.1; letter-spacing:.2px;
+      background: linear-gradient(90deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-align:center;
+    }
+    p.lead{font-size:clamp(16px, 3vw, 20px); margin:0 0 16px; text-align:justify;}
+    .highlight{color:var(--accent2); font-weight:700;}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:12px 18px; border-radius:999px; text-decoration:none; font-weight:600;
+      background:var(--accent); color:#fff; box-shadow:0 8px 24px rgba(255,183,3,.35);
+      transition:transform .15s ease, box-shadow .2s ease;
+      position:relative;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 32px rgba(255,183,3,.45); }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; justify-content:flex-start;}
+    .chip{ padding:6px 10px; border-radius:999px; background:#fff9e6; color:#9e7100; font-weight:600; font-size:13px;}
+    canvas#confetti{position:fixed; inset:0; z-index:1; pointer-events:none;}
+
+    /* Footer bottom-left */
+    footer.footer-bl{
+      position:fixed; left:18px; bottom:10px; z-index:3;
+      font-size:13px; opacity:.85; background:rgba(255,255,255,.8);
+      padding:6px 10px; border-radius:999px; box-shadow:0 6px 16px rgba(0,0,0,.08);
+    }
+
+    /* Center modal with smooth animation & backdrop */
+    .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .40s ease-out; z-index:2}
+    .backdrop.visible{opacity:1; pointer-events:auto}
+    .mail-pop{ position:fixed; left:50%; top:50%; transform:translate(-50%,-48%) scale(.94);
+      width:min(92vw, 420px); background:#fff; border-radius:16px;
+      box-shadow:0 22px 70px rgba(0,0,0,.18); padding:18px 20px; opacity:0; pointer-events:none;
+      transition: opacity .45s ease, transform .55s cubic-bezier(.25,.8,.25,1); z-index:3 }
+    .mail-pop.visible{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1) }
+    .envelope{ display:grid; grid-template-columns:48px 1fr; gap:12px; align-items:center; }
+    .env-icon{ width:48px; height:36px; border-radius:6px; position:relative; background:#fff7e1; border:2px solid #ffd166; }
+    .env-icon:before, .env-icon:after{ content:""; position:absolute; inset:0; border-radius:6px; }
+    .env-icon:before{ border-top:2px solid #f4a261; transform:skewY(-10deg); top:10px; }
+    .env-icon:after{ border-bottom:2px solid #f4a261; transform:skewY(10deg); bottom:10px; }
+    .mail-q{ margin:0; font-weight:700; }
+    .mail-meta{ margin:4px 0 0; font-size:14px; opacity:.75}
+    .mail-actions{ display:flex; gap:10px; margin-top:12px; justify-content:flex-start;}
+    .mail-actions button{ appearance:none; border:none; border-radius:999px; padding:10px 14px; font-weight:600; cursor:pointer; }
+    .yes{ background:#ffb703; color:#fff; }
+    .no{ background:#f0f0f0; color:#333; }
+    .reply{ font-size:13px; opacity:.8; margin-top:6px; }
+
+    /* Music prompt button (fallback if autoplay blocked) */
+    .music-btn{
+      position:fixed; right:14px; bottom:12px; z-index:4;
+      padding:10px 12px; border-radius:999px; background:#fff; color:#111; font-weight:700;
+      box-shadow:0 8px 24px rgba(0,0,0,.16); border:none; cursor:pointer;
+      display:none;
+    }
+
+    /* Responsive & accessibility */
+    @media (max-width: 420px){
+      .btn{ padding:12px 16px; }
+      .mail-actions button{ padding:10px 14px; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Backgrounds -->
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg-flower" aria-hidden="true"></div>
+
+  <!-- Backdrop and canvas -->
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+  <canvas id="confetti"></canvas>
+
+  <!-- Footer bottom-left -->
+  <!-- Hidden audio (autoplay & loop). If autoplay is blocked, a small button will appear to start music. -->
+  <audio id="bgm" src="https://www.bensound.com/bensound-music/bensound-acousticbreeze.mp3" autoplay loop preload="auto"></audio>
+  <button id="musicBtn" class="music-btn">🎵 Bật nhạc</button>
+
+  <main class="card">
+    <h1>🌻 HAPPY WOMAN'S DAY 20/10 🌻</h1>
+    <p class="lead">
+      Chúc mừng ngày Quốc tế Phụ nữ 20/10. Chúc <strong class="highlight">Dương</strong> luôn khỏe mạnh, luôn hạnh phúc và thật rực rỡ; học thật giỏi, gặp được nhiều điều may mắn và như ý trong năm học cuối cùng này và gặt hái được nhiều thành công trong cuộc sống nhé.
+    </p>
+    <div class="chips">
+      <span class="chip">🌻 Sunshine</span>
+      <span class="chip">💛 Happiness</span>
+      <span class="chip">✨ Success</span>
+      <span class="chip">🌼 Bright Future</span>
+    </div>
+    <p style="margin-top:12px; text-align:center">
+      <a class="btn" id="mailBtn" role="button" aria-haspopup="dialog" aria-expanded="false">Hòm thư ✉️</a>
+    </p>
+    <div class="mail-pop" id="mailPop" role="dialog" aria-modal="false" aria-label="Bức thư">
+      <div class="envelope">
+        <div class="env-icon" aria-hidden="true"></div>
+        <div>
+          <p class="mail-q">Hôm nay bà có vui không?</p>
+          <p class="mail-meta">Gửi chút ấm áp đến bà 💛</p>
+          <div class="mail-actions">
+            <button class="yes" id="yesBtn">Vui 😊</button>
+            <button class="no" id="noBtn">Chưa lắm 🙃</button>
+          </div>
+          <div class="reply" id="replyArea" hidden></div>
+        </div>
+      </div>
+    </div>
+      <footer class="footer-in">Made by Minh Thắng + ChatGPT😗</footer>
+  </main>
+
+  <script>
+    // Music autoplay handling
+    const audio = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    (async () => {
+      try {
+        await audio.play();
+      } catch (e) {
+        // Autoplay blocked: show a small prompt button
+        musicBtn.style.display = 'inline-flex';
+      }
+    })();
+    musicBtn.addEventListener('click', async () => {
+      try{
+        await audio.play();
+        musicBtn.style.display = 'none';
+      }catch(e){ /* ignore */ }
+    });
+
+    // Modal controls
+    const mailBtn = document.getElementById('mailBtn');
+    const mailPop = document.getElementById('mailPop');
+    const backdrop = document.getElementById('backdrop');
+    const replyArea = document.getElementById('replyArea');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+
+    function setModal(show){
+      mailPop.classList.toggle('visible', show);
+      backdrop.classList.toggle('visible', show);
+      mailBtn.setAttribute('aria-expanded', show ? 'true' : 'false');
+      if(show){ replyArea.hidden = true; replyArea.textContent = ''; }
+    }
+    mailBtn.addEventListener('click', (e)=>{ e.preventDefault(); setModal(true); });
+    backdrop.addEventListener('click', ()=> setModal(false));
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') setModal(false); });
+
+    yesBtn.addEventListener('click', ()=>{
+      replyArea.hidden = false;
+      replyArea.textContent = "Tuyệt quá nè! Chúc bà có một ngày thật rực rỡ nha🌷";
+    });
+    noBtn.addEventListener('click', ()=>{
+      replyArea.hidden = false;
+      replyArea.textContent = "Không sao đâu, gửi bà một bông hướng dương để thấy ấm áp hơn nhé 🌻";
+    });
+
+    // Tiny confetti
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let w, h, pieces = [];
+    function resize(){ w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+    addEventListener('resize', resize); resize();
+    function rand(a,b){ return Math.random()*(b-a)+a; }
+    function init(n=120){
+      pieces = Array.from({length:n}, () => ({
+        x: rand(0,w), y: rand(-h,0), s: rand(4,10), r: rand(0,Math.PI*2),
+        vx: rand(-0.6,0.6), vy: rand(1.2,2.6), vr: rand(-0.05,0.05),
+        c: Math.random() < .5 ? '#ffb703' : (Math.random() < .5 ? '#ffd166' : '#f77f00')
+      }));
+    }
+    init();
+    (function loop(){
+      requestAnimationFrame(loop);
+      ctx.clearRect(0,0,w,h);
+      for(const p of pieces){
+        p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        if(p.y > h+10) { p.y = -10; p.x = rand(0,w); }
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        ctx.fillStyle = p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
+        ctx.restore();
+      }
+    })();
+
+    // Respect reduced motion if user prefers
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('*').forEach(el=>{
+        el.style.animation = 'none';
+        el.style.transition = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
